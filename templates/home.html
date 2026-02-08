@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-4 fw-bold mb-4">Welcome to TaskFlow 🚀</h1>
+        <p class="lead mb-4">
+            Manage your projects, collaborate with your team, and get things done efficiently.
+        </p>
+        
+        {% if user.is_authenticated %}
+            <div class="alert alert-success shadow-sm">
+                <h4>Welcome back, {{ user.get_full_name }}! 👋</h4>
+                <p class="mb-0">Ready to manage your tasks?</p>
+            </div>
+            <a href="#" class="btn btn-primary btn-lg mt-3">Go to Dashboard</a>
+        {% else %}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-5">
+                <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg px-5">
+                    Get Started Free
+                </a>
+                <a href="{% url 'account_login' %}" class="btn btn-outline-primary btn-lg px-5">
+                    Sign In
+                </a>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h3>🗂️ Workspaces</h3>
+                            <p>Create team workspaces and organize your projects</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h3>✅ Tasks</h3>
+                            <p>Track tasks with priorities, due dates, and assignments</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <h3>👥 Collaboration</h3>
+                            <p>Invite team members and work together seamlessly</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

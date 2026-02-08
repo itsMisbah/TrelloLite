@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load allauth %}
+
+{% block title %}Login - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">Login to TaskFlow</h2>
+                
+                <form method="post" action="{% url 'account_login' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_login" class="form-label">Username or Email</label>
+                        <input type="text" name="login" class="form-control form-control-lg" id="id_login" placeholder="Enter username or email" required autofocus>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control form-control-lg" id="id_password" placeholder="Enter password" required>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" name="remember" class="form-check-input" id="id_remember">
+                        <label class="form-check-label" for="id_remember">
+                            Remember me
+                        </label>
+                    </div>
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> Invalid username/email or password.
+                        </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Login</button>
+                    
+                    <div class="text-center">
+                        <a href="{% url 'account_reset_password' %}" class="text-muted">Forgot password?</a>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <p class="text-center mb-0">
+                    Don't have an account? <a href="{% url 'account_signup' %}" class="fw-bold">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
