@@ -5,15 +5,13 @@
 {% block content %}
 <div class="row">
     <div class="col-md-8 mx-auto text-center">
-        <div class="card shadow">
-            <div class="card-body p-5">
                 <div class="mb-4">
                     <h1 style="font-size: 4rem;">📧</h1>
                 </div>
                 <h2 class="mb-3">Check Your Email!</h2>
                 <p class="lead">We've sent you a verification email.</p>
                 <p class="text-muted">Please click the link in the email to verify your account and complete registration.</p>
-                
+{% comment %}                 
                 <hr class="my-4">
                 
                 <p class="mb-0">
@@ -22,8 +20,7 @@
                         <a href="{% url 'account_email' %}">request a new one</a>.
                     </small>
                 </p>
-            </div>
-        </div>
+{% endcomment %}
     </div>
 </div>
 {% endblock %}

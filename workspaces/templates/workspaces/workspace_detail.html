@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ workspace.name }} - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:list' %}">Workspaces</a></li>
+                <li class="breadcrumb-item active">{{ workspace.name }}</li>
+            </ol>
+        </nav>
+        <h1>{{ workspace.name }}</h1>
+        <p class="text-muted">{{ workspace.description|default:"No description" }}</p>
+        <p class="small text-muted">
+            Created by <strong>{{ workspace.owner.username }}</strong> 
+            on {{ workspace.created_at|date:"M d, Y" }}
+        </p>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if is_owner %}
+            <a href="{% url 'workspaces:update' workspace.pk %}" class="btn btn-outline-primary">
+                ✏️ Edit
+            </a>
+            <a href="{% url 'workspaces:delete' workspace.pk %}" class="btn btn-outline-danger">
+                🗑️ Delete
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <!-- Members Section -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">👥 Members ({{ all_members.count }})</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for member in all_members %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {{ member.username }}
+                                {% if member == workspace.owner %}
+                                    <span class="badge bg-primary">Owner</span>
+                                {% endif %}
+                            </span>
+                            {% if is_owner and member != workspace.owner %}
+                                <a href="{% url 'workspaces:remove_member' workspace.pk member.pk %}" 
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Remove {{ member.username }}?')">
+                                    Remove
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                {% if is_owner %}
+                    <hr>
+                    <form method="post" action="{% url 'workspaces:add_member' workspace.pk %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="username" class="form-control" 
+                                   placeholder="Username" required>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                        <small class="text-muted">Enter exact username</small>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tasks Section (Placeholder) -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">✅ Tasks</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <p class="mb-0">Tasks feature coming in Day 4! 🚀</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

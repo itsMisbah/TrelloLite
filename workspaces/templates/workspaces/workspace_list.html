@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}My Workspaces - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>My Workspaces</h1>
+        <p class="text-muted">Manage your projects and teams</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'workspaces:create' %}" class="btn btn-primary">
+            ➕ Create Workspace
+        </a>
+    </div>
+</div>
+
+{% if workspaces %}
+    <div class="row">
+        {% for workspace in workspaces %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'workspaces:detail' workspace.pk %}" class="text-decoration-none">
+                                {{ workspace.name }}
+                            </a>
+                        </h5>
+                        <p class="card-text text-muted">
+                            {{ workspace.description|truncatewords:20|default:"No description" }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <small class="text-muted">
+                            👤 {{ workspace.member_count }} member{{ workspace.member_count|pluralize }}
+                            {% if workspace.is_owner %}
+                                <span class="badge bg-primary">Owner</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h4>No workspaces yet!</h4>
+        <p class="mb-0">Create your first workspace to start organizing tasks.</p>
+    </div>
+{% endif %}
+{% endblock %}

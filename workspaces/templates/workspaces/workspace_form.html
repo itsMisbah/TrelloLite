@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if object %}Edit{% else %}Create{% endif %} Workspace - TaskFlow
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:list' %}">Workspaces</a></li>
+                <li class="breadcrumb-item active">
+                    {% if object %}Edit{% else %}Create{% endif %}
+                </li>
+            </ol>
+        </nav>
+        
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="mb-4">
+                    {% if object %}
+                        Edit Workspace
+                    {% else %}
+                        Create New Workspace
+                    {% endif %}
+                </h2>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Workspace Name *</label>
+                        <input type="text" name="name" class="form-control form-control-lg" 
+                               id="id_name" value="{{ form.name.value|default:'' }}" 
+                               placeholder="e.g., Website Redesign Project" required>
+                        {% if form.name.errors %}
+                            <div class="text-danger small">{{ form.name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Description</label>
+                        <textarea name="description" class="form-control" id="id_description" 
+                                  rows="4" placeholder="What is this workspace about?">{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted">Optional - Describe the purpose of this workspace</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            {% if object %}Update Workspace{% else %}Create Workspace{% endif %}
+                        </button>
+                        <a href="{% if object %}{% url 'workspaces:detail' object.pk %}{% else %}{% url 'workspaces:list' %}{% endif %}" 
+                           class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
