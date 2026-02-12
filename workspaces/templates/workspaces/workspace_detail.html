@@ -74,16 +74,45 @@
         </div>
     </div>
     
-    <!-- Tasks Section (Placeholder) -->
+    <!-- Tasks Section -->
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">✅ Tasks</h5>
+                <a href="{% url 'tasks:create' workspace.pk %}" class="btn btn-sm btn-primary">
+                    ➕ New Task
+                </a>
             </div>
             <div class="card-body">
-                <div class="alert alert-info">
-                    <p class="mb-0">Tasks feature coming in Day 4! 🚀</p>
-                </div>
+                {% with recent_tasks=workspace.tasks.all|slice:":5" %}
+                    {% if recent_tasks %}
+                        <div class="list-group list-group-flush">
+                            {% for task in recent_tasks %}
+                                <a href="{% url 'tasks:detail' task.pk %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ task.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ task.description|truncatewords:10|default:"No description" }}</small>
+                                        </div>
+                                        <span class="badge bg-{{ task.get_status_badge_class }}">
+                                            {{ task.get_status_display }}
+                                        </span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'tasks:list' workspace.pk %}" class="btn btn-outline-primary">
+                                View All Tasks ({{ workspace.tasks.count }})
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <p class="mb-0">No tasks yet. Create your first task!</p>
+                        </div>
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
     </div>

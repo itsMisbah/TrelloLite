@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Tasks - {{ workspace.name }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:list' %}">Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:detail' workspace.pk %}">{{ workspace.name }}</a></li>
+                <li class="breadcrumb-item active">Tasks</li>
+            </ol>
+        </nav>
+        <h1>📋 Tasks - {{ workspace.name }}</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'tasks:create' workspace.pk %}" class="btn btn-primary">
+            ➕ New Task
+        </a>
+    </div>
+</div>
+
+<!-- Task Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="mb-0">{{ total_tasks }}</h3>
+                <small class="text-muted">Total Tasks</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-secondary">
+            <div class="card-body">
+                <h3 class="mb-0 text-secondary">{{ todo_count }}</h3>
+                <small class="text-muted">To Do</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-primary">
+            <div class="card-body">
+                <h3 class="mb-0 text-primary">{{ in_progress_count }}</h3>
+                <small class="text-muted">In Progress</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-success">
+            <div class="card-body">
+                <h3 class="mb-0 text-success">{{ done_count }}</h3>
+                <small class="text-muted">Done</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                {{ filter_form.status }}
+            </div>
+            <div class="col-md-3">
+                {{ filter_form.priority }}
+            </div>
+            <div class="col-md-3">
+                {{ filter_form.assigned_to }}
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Task List -->
+{% if tasks %}
+    <div class="list-group">
+        {% for task in tasks %}
+            <a href="{% url 'tasks:detail' task.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">
+                            {{ task.title }}
+                            {% if task.is_overdue %}
+                                <span class="badge bg-danger">Overdue</span>
+                            {% endif %}
+                        </h5>
+                        <p class="mb-1 text-muted">{{ task.description|truncatewords:20|default:"No description" }}</p>
+                        <small class="text-muted">
+                            Created by {{ task.created_by.username }} on {{ task.created_at|date:"M d, Y" }}
+                        </small>
+                    </div>
+                    <div class="text-end ms-3">
+                        <span class="badge bg-{{ task.get_status_badge_class }} mb-1">{{ task.get_status_display }}</span>
+                        <span class="badge bg-{{ task.get_priority_badge_class }} mb-1">{{ task.get_priority_display }}</span>
+                        {% if task.assigned_to %}
+                            <br><small class="text-muted">👤 {{ task.assigned_to.username }}</small>
+                        {% endif %}
+                        {% if task.due_date %}
+                            <br><small class="text-muted">📅 {{ task.due_date|date:"M d" }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        <h4>No tasks yet!</h4>
+        <p class="mb-0">Create your first task to get started.</p>
+    </div>
+{% endif %}
+{% endblock %}

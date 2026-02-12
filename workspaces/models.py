@@ -66,5 +66,4 @@ class Workspace(models.Model):
 
     
     def member_count(self):
-        """Return total number of members (including owner)"""
         return self.members.count()  

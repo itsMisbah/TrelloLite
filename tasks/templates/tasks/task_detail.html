@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.title }} - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:list' %}">Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:detail' task.workspace.pk %}">{{ task.workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tasks:list' task.workspace.pk %}">Tasks</a></li>
+                <li class="breadcrumb-item active">{{ task.title|truncatewords:5 }}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if can_edit %}
+            <a href="{% url 'tasks:update' task.pk %}" class="btn btn-outline-primary">
+                ✏️ Edit
+            </a>
+        {% endif %}
+        {% if can_delete %}
+            <a href="{% url 'tasks:delete' task.pk %}" class="btn btn-outline-danger">
+                🗑️ Delete
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="mb-3">{{ task.title }}</h1>
+                
+                <div class="mb-3">
+                    <span class="badge bg-{{ task.get_status_badge_class }} me-2">{{ task.get_status_display }}</span>
+                    <span class="badge bg-{{ task.get_priority_badge_class }}">{{ task.get_priority_display }} Priority</span>
+                    {% if task.is_overdue %}
+                        <span class="badge bg-danger">Overdue</span>
+                    {% endif %}
+                </div>
+                
+                {% if task.description %}
+                    <h5>Description</h5>
+                    <p class="text-muted">{{ task.description|linebreaks }}</p>
+                {% else %}
+                    <p class="text-muted fst-italic">No description provided</p>
+                {% endif %}
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong>Created by:</strong> {{ task.created_by.username }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Created on:</strong> {{ task.created_at|date:"M d, Y H:i" }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Last updated:</strong> {{ task.updated_at|date:"M d, Y H:i" }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong>Assigned to:</strong> 
+                            {% if task.assigned_to %}
+                                {{ task.assigned_to.username }}
+                            {% else %}
+                                <span class="text-muted">Unassigned</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Due date:</strong> 
+                            {% if task.due_date %}
+                                {{ task.due_date|date:"M d, Y" }}
+                                {% if task.is_overdue %}
+                                    <span class="text-danger">(Overdue)</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">No due date</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-2">
+                            <strong>Workspace:</strong> 
+                            <a href="{% url 'workspaces:detail' task.workspace.pk %}">{{ task.workspace.name }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comments section (placeholder) -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">💬 Comments</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-0">
+                    Comments feature coming soon! 🚀
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Quick Actions -->
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">⚡ Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'tasks:toggle_status' task.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-primary w-100 mb-2">
+                        Change Status
+                        <br>
+                        <small>Currently: {{ task.get_status_display }}</small>
+                    </button>
+                </form>
+                
+                {% if can_edit %}
+                    <a href="{% url 'tasks:update' task.pk %}" class="btn btn-outline-secondary w-100 mb-2">
+                        Edit Task Details
+                    </a>
+                {% endif %}
+                
+                <a href="{% url 'tasks:list' task.workspace.pk %}" class="btn btn-outline-info w-100">
+                    Back to Task List
+                </a>
+            </div>
+        </div>
+        
+        <!-- Status History (placeholder) -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">📊 Activity</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <small class="text-muted">
+                            <strong>Created</strong> by {{ task.created_by.username }}
+                            <br>{{ task.created_at|date:"M d, Y H:i" }}
+                        </small>
+                    </li>
+                    {% if task.updated_at != task.created_at %}
+                        <li>
+                            <small class="text-muted">
+                                <strong>Updated</strong>
+                                <br>{{ task.updated_at|date:"M d, Y H:i" }}
+                            </small>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

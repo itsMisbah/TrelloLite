@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ task.title }} - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:list' %}">Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:detail' task.workspace.pk %}">{{ task.workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tasks:list' task.workspace.pk %}">Tasks</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tasks:detail' task.pk %}">{{ task.title|truncatewords:3 }}</a></li>
+                <li class="breadcrumb-item active">Delete</li>
+            </ol>
+        </nav>
+        
+        <div class="card shadow border-danger">
+            <div class="card-body p-5 text-center">
+                <h2 class="text-danger mb-4">⚠️ Delete Task?</h2>
+                <p class="lead">Are you sure you want to delete this task?</p>
+                <div class="alert alert-warning text-start">
+                    <strong>{{ task.title }}</strong>
+                    <br>
+                    <small class="text-muted">{{ task.description|truncatewords:20|default:"No description" }}</small>
+                </div>
+                <p class="text-muted">This action cannot be undone.</p>
+                
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg px-5 me-2">
+                        Yes, Delete
+                    </button>
+                    <a href="{% url 'tasks:detail' task.pk %}" class="btn btn-secondary btn-lg px-5">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
