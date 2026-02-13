@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
-from .models import Task
-from .forms import TaskForm, TaskFilterForm
+from .models import Task, Comment
+from .forms import TaskForm, TaskFilterForm, CommentForm
 from workspaces.models import Workspace
 
 
@@ -81,6 +81,14 @@ class TaskDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         task = self.get_object()
         context['can_edit'] = task.can_edit(self.request.user)
         context['can_delete'] = task.can_delete(self.request.user)
+        context['comment_form'] = CommentForm()
+        comments = task.comments.all()  
+        context['comments'] = comments  
+
+        for comment in comments:
+            comment.can_edit_by_user = comment.can_edit(self.request.user)
+            comment.can_delete_by_user = comment.can_delete(self.request.user)
+
         return context
 
 
@@ -189,3 +197,77 @@ def toggle_task_status(request, pk):
     
     # Redirect back to referring page or task detail
     return redirect(request.META.get('HTTP_REFERER', reverse('tasks:detail', kwargs={'pk': pk})))
+
+
+@login_required
+def add_comment(request, task_id):
+    """Add a comment to a task"""
+    task = get_object_or_404(Task, pk=task_id)
+    
+    # Check if user can access this task
+    if not (task.workspace.is_owner(request.user) or task.workspace.is_member(request.user)):
+        messages.error(request, "You don't have permission to comment on this task.")
+        return redirect('tasks:detail', pk=task_id)
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.task = task
+            comment.user = request.user
+            comment.save()
+            messages.success(request, "Comment added successfully!")
+        else:
+            messages.error(request, "Error adding comment. Please try again.")
+    
+    return redirect('tasks:detail', pk=task_id)
+
+
+@login_required
+def edit_comment(request, pk):
+    """Edit a comment"""
+    comment = get_object_or_404(Comment, pk=pk)
+    
+    # Check permission
+    if not comment.can_edit(request.user):
+        messages.error(request, "You can only edit your own comments.")
+        return redirect('tasks:detail', pk=comment.task.pk)
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Comment updated successfully!")
+            return redirect('tasks:detail', pk=comment.task.pk)
+    else:
+        form = CommentForm(instance=comment)
+    
+    context = {
+        'form': form,
+        'comment': comment,
+        'task': comment.task,
+    }
+    return render(request, 'tasks/comment_edit.html', context)
+
+
+@login_required
+def delete_comment(request, pk):
+    """Delete a comment"""
+    comment = get_object_or_404(Comment, pk=pk)
+    task_pk = comment.task.pk
+    
+    # Check permission
+    if not comment.can_delete(request.user):
+        messages.error(request, "You don't have permission to delete this comment.")
+        return redirect('tasks:detail', pk=task_pk)
+    
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, "Comment deleted successfully!")
+        return redirect('tasks:detail', pk=task_pk)
+    
+    context = {
+        'comment': comment,
+        'task': comment.task,
+    }
+    return render(request, 'tasks/comment_confirm_delete.html', context)

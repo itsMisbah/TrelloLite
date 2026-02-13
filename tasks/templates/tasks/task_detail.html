@@ -92,15 +92,67 @@
             </div>
         </div>
         
-        <!-- Comments section (placeholder) -->
+        <!-- Comments section -->
         <div class="card shadow-sm">
             <div class="card-header">
-                <h5 class="mb-0">💬 Comments</h5>
+                <h5 class="mb-0">💬 Comments ({{ comments.count }})</h5>
             </div>
             <div class="card-body">
-                <div class="alert alert-info mb-0">
-                    Comments feature coming soon! 🚀
-                </div>
+                <!-- Add Comment Form -->
+                <form method="post" action="{% url 'tasks:add_comment' task.pk %}" class="mb-4">
+                    {% csrf_token %}
+                    {{ comment_form.text }}
+                    <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                </form>
+
+                <hr>
+
+                <!-- Comment List -->
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="card mb-3 {% if comment.user == request.user %}border-primary{% endif %}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <strong>{{ comment.user.username }}</strong>
+                                        {% if comment.user == task.created_by %}
+                                            <span class="badge bg-info">Author</span>
+                                        {% endif %}
+                                        {% if comment.user == request.user %}
+                                            <span class="badge bg-primary">You</span>
+                                        {% endif %}
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ comment.created_at|date:"M d, Y H:i" }}
+                                            {% if comment.is_edited %}
+                                                <em>(edited)</em>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    {% if comment.can_edit_by_user or comment.can_delete_by_user %}
+                                        <div class="btn-group btn-group-sm">
+                                            {% if comment.can_edit_by_user %}
+                                                <a href="{% url 'tasks:edit_comment' comment.pk %}" class="btn btn-outline-secondary">
+                                                    Edit
+                                                </a>
+                                            {% endif %}
+                                            {% if comment.can_delete_by_user %}
+                                                <a href="{% url 'tasks:delete_comment' comment.pk %}" class="btn btn-outline-danger">
+                                                    Delete
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <p class="mb-0">{{ comment.text|linebreaks }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0">No comments yet. Be the first to comment!</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

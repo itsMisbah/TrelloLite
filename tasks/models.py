@@ -127,3 +127,50 @@ class Task(models.Model):
         """Check if user can delete this task"""
         # Only workspace owner or task creator can delete
         return self.workspace.is_owner(user) or self.created_by == user
+    
+
+class Comment(models.Model):
+    """
+    Comment model - represents a comment on a task.
+    Users can comment on tasks they have access to.
+    """
+    
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        help_text="Task this comment belongs to"
+    )
+    
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        help_text="User who wrote this comment"
+    )
+    
+    text = models.TextField(help_text="Comment text")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['created_at']  # Oldest first
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
+    
+    def __str__(self):
+        return f"{self.user.username} on {self.task.title}"
+    
+    def can_edit(self, user):
+        """Check if user can edit this comment"""
+        return self.user == user
+    
+    def can_delete(self, user):
+        """Check if user can delete this comment"""
+        # User can delete own comment OR workspace owner can delete any comment
+        return self.user == user or self.task.workspace.is_owner(user)
+    
+    def is_edited(self):
+        """Check if comment was edited"""
+        return self.updated_at > self.created_at + timezone.timedelta(seconds=1)

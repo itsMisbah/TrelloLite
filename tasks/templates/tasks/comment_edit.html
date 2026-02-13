@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Comment - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:list' %}">Workspaces</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'workspaces:detail' task.workspace.pk %}">{{ task.workspace.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tasks:list' task.workspace.pk %}">Tasks</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tasks:detail' task.pk %}">{{ task.title|truncatewords:3 }}</a></li>
+                <li class="breadcrumb-item active">Edit Comment</li>
+            </ol>
+        </nav>
+        
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="mb-4">Edit Comment</h2>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        {{ form.text }}
+                        {% if form.text.errors %}
+                            <div class="text-danger small">{{ form.text.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Update Comment</button>
+                        <a href="{% url 'tasks:detail' task.pk %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

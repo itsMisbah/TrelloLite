@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task
+from .models import Task, Comment
 
 
 class TaskForm(forms.ModelForm):
@@ -74,3 +74,21 @@ class TaskFilterForm(forms.Form):
             choices = [('', 'All Assignees'), ('unassigned', 'Unassigned')]
             choices += [(m.id, m.username) for m in members]
             self.fields['assigned_to'].choices = choices
+
+
+class CommentForm(forms.ModelForm):
+    """Form for adding/editing comments"""
+    
+    class Meta:
+        model = Comment  # Make sure to import Comment at top
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Write your comment...'
+            }),
+        }
+        labels = {
+            'text': ''
+        }

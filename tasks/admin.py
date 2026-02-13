@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task
+from .models import Task, Comment
 
 
 @admin.register(Task)
@@ -33,3 +33,18 @@ class TaskAdmin(admin.ModelAdmin):
         if not change:  # If creating new object
             obj.created_by = request.user
         super().save_model(request, obj, form, change)
+
+# Add Comment Admin
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    """Admin interface for Comment"""
+    
+    list_display = ['user', 'task', 'text_preview', 'created_at']
+    list_filter = ['created_at', 'task__workspace']
+    search_fields = ['text', 'user__username', 'task__title']
+    readonly_fields = ['created_at', 'updated_at']
+    
+    def text_preview(self, obj):
+        """Show preview of comment text"""
+        return obj.text[:50] + "..." if len(obj.text) > 50 else obj.text
+    text_preview.short_description = "Comment"
