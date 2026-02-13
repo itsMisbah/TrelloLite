@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'accounts',
+    'core',
     'tasks',
     'workspaces',
 ]
@@ -158,7 +159,7 @@ ACCOUNT_SIGNUP_FIELDS = [
  
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_UNIQUE_EMAIL = True
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_SESSION_REMEMBER = True 
 ACCOUNT_SESSION_REMEMBER_AGE = 60 * 60 * 24 * 30

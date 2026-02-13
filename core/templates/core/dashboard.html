@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Dashboard</h1>
+        <p class="text-muted">Welcome back, {{ user.get_full_name }}! 👋</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'workspaces:create' %}" class="btn btn-primary">
+            ➕ New Workspace
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h2 class="mb-0">{{ total_tasks }}</h2>
+                <small class="text-muted">Total Tasks</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow-sm border-secondary">
+            <div class="card-body">
+                <h2 class="mb-0 text-secondary">{{ todo_tasks }}</h2>
+                <small class="text-muted">To Do</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow-sm border-primary">
+            <div class="card-body">
+                <h2 class="mb-0 text-primary">{{ in_progress_tasks }}</h2>
+                <small class="text-muted">In Progress</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center shadow-sm border-success">
+            <div class="card-body">
+                <h2 class="mb-0 text-success">{{ done_tasks }}</h2>
+                <small class="text-muted">Done</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overdue Tasks Alert -->
+{% if overdue_tasks %}
+    <div class="alert alert-danger mb-4">
+        <h5>⚠️ {{ overdue_tasks.count }} Overdue Task{{ overdue_tasks.count|pluralize }}</h5>
+        <ul class="mb-0">
+            {% for task in overdue_tasks|slice:":3" %}
+                <li>
+                    <a href="{% url 'tasks:detail' task.pk %}" class="text-dark">
+                        <strong>{{ task.title }}</strong>
+                    </a> 
+                    - Due: {{ task.due_date|date:"M d" }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% if overdue_tasks.count > 3 %}
+            <a href="{% url 'core:my_tasks' %}" class="alert-link">View all overdue tasks →</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div class="row">
+    <!-- My Workspaces -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🗂️ My Workspaces</h5>
+                <a href="{% url 'workspaces:list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if workspaces %}
+                    <div class="list-group list-group-flush">
+                        {% for workspace in workspaces %}
+                            <a href="{% url 'workspaces:detail' workspace.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ workspace.name }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ workspace.member_count }} member{{ workspace.member_count|pluralize }}
+                                            • {{ workspace.tasks.count }} task{{ workspace.tasks.count|pluralize }}
+                                        </small>
+                                    </div>
+                                    {% if workspace.is_owner_by_user %}
+                                        <span class="badge bg-primary">Owner</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        <p class="mb-0">No workspaces yet. <a href="{% url 'workspaces:create' %}">Create one!</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tasks -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">✅ My Recent Tasks</h5>
+                <a href="{% url 'core:my_tasks' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if my_tasks %}
+                    <div class="list-group list-group-flush">
+                        {% for task in my_tasks %}
+                            <a href="{% url 'tasks:detail' task.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <strong>{{ task.title }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ task.workspace.name }}
+                                            {% if task.due_date %}
+                                                • Due: {{ task.due_date|date:"M d" }}
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-{{ task.get_status_badge_class }}">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        <p class="mb-0">No tasks yet. Start creating!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}My Tasks - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>My Tasks</h1>
+        <p class="text-muted">All tasks assigned to you or created by you</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Task Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="mb-0">{{ total_count }}</h3>
+                <small class="text-muted">Total</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-secondary">
+            <div class="card-body">
+                <h3 class="mb-0 text-secondary">{{ todo_count }}</h3>
+                <small class="text-muted">To Do</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-primary">
+            <div class="card-body">
+                <h3 class="mb-0 text-primary">{{ in_progress_count }}</h3>
+                <small class="text-muted">In Progress</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center border-success">
+            <div class="card-body">
+                <h3 class="mb-0 text-success">{{ done_count }}</h3>
+                <small class="text-muted">Done</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    {% for value, label in STATUS_CHOICES %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="priority" class="form-select">
+                    <option value="">All Priorities</option>
+                    {% for value, label in PRIORITY_CHOICES %}
+                        <option value="{{ value }}" {% if priority_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Task List -->
+{% if tasks %}
+    <div class="list-group">
+        {% for task in tasks %}
+            <a href="{% url 'tasks:detail' task.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">
+                            {{ task.title }}
+                            {% if task.is_overdue %}
+                                <span class="badge bg-danger">Overdue</span>
+                            {% endif %}
+                        </h5>
+                        <p class="mb-1 text-muted">{{ task.description|truncatewords:20|default:"No description" }}</p>
+                        <small class="text-muted">
+                            <strong>Workspace:</strong> {{ task.workspace.name }}
+                            {% if task.assigned_to %}
+                                • <strong>Assigned to:</strong> {{ task.assigned_to.username }}
+                            {% endif %}
+                            {% if task.due_date %}
+                                • <strong>Due:</strong> {{ task.due_date|date:"M d, Y" }}
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div class="text-end ms-3">
+                        <span class="badge bg-{{ task.get_status_badge_class }} mb-1">{{ task.get_status_display }}</span>
+                        <span class="badge bg-{{ task.get_priority_badge_class }}">{{ task.get_priority_display }}</span>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h4>No tasks found!</h4>
+        <p class="mb-0">Try adjusting your filters or create a new task.</p>
+    </div>
+{% endif %}
+{% endblock %}
