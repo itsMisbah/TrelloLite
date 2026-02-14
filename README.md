@@ -79,7 +79,7 @@ python manage.py runserver
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+[Dashboard](screenshots/dashboard.png)
 
 ### Workspace Detail
 ![Workspace](screenshots/workspace.png)
@@ -107,6 +107,6 @@ This project is licensed under the MIT License.
 ## Author
 
 **Misbah Sultan**
-- LinkedIn: [your-linkedin](www.linkedin.com/in/misbah-shahzadi)
+- LinkedIn: [Misbah-Shahzadi](www.linkedin.com/in/misbah-shahzadi)
 - Email: misbahh77777@gmail.com.com
 
