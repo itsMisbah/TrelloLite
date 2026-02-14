@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+        <h1>Search Results</h1>
+        {% if query %}
+            <p class="text-muted">
+                Found {{ total_results }} result{{ total_results|pluralize }} for "<strong>{{ query }}</strong>"
+            </p>
+        {% else %}
+            <p class="text-muted">Enter a search query to find workspaces and tasks.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <!-- Search Form -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="get" action="{% url 'core:search' %}">
+                    <div class="input-group input-group-lg">
+                        <input type="text" name="q" class="form-control" 
+                               placeholder="Search workspaces and tasks..." 
+                               value="{{ query }}" autofocus>
+                        <button type="submit" class="btn btn-primary">
+                            🔍 Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if query %}
+            <!-- Workspaces Results -->
+            {% if workspaces %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">🗂️ Workspaces ({{ workspaces.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            {% for workspace in workspaces %}
+                                <a href="{% url 'workspaces:detail' workspace.pk %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ workspace.name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ workspace.description|truncatewords:20|default:"No description" }}</small>
+                                        </div>
+                                        {% if workspace.is_owner %}
+                                            <span class="badge bg-primary">Owner</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Tasks Results -->
+            {% if tasks %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">✅ Tasks ({{ tasks.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            {% for task in tasks %}
+                                <a href="{% url 'tasks:detail' task.pk %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ task.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">
+                                                {{ task.workspace.name }}
+                                                {% if task.assigned_to %}
+                                                    • Assigned to {{ task.assigned_to.username }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-{{ task.get_status_badge_class }}">
+                                            {{ task.get_status_display }}
+                                        </span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if not workspaces and not tasks %}
+                <div class="alert alert-info">
+                    <h5>No results found</h5>
+                    <p class="mb-0">Try different keywords or check your spelling.</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

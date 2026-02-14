@@ -12,3 +12,8 @@ dist/
 build/
 
 migrations/
+
+*.log
+media/*
+!media/.gitkeep
+staticfiles/

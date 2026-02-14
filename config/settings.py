@@ -146,7 +146,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static'] 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Allauth Settings
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
@@ -166,3 +169,7 @@ ACCOUNT_SESSION_REMEMBER_AGE = 60 * 60 * 24 * 30
 
 # Email Backend (Console for development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Media files (user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

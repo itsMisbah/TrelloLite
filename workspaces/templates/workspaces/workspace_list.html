@@ -5,6 +5,12 @@
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Workspaces</li>
+            </ol>
+        </nav>
         <h1>My Workspaces</h1>
         <p class="text-muted">Manage your projects and teams</p>
     </div>
@@ -32,7 +38,8 @@
                     </div>
                     <div class="card-footer bg-transparent">
                         <small class="text-muted">
-                            👤 {{ workspace.member_count }} member{{ workspace.member_count|pluralize }}
+                             {{ workspace.member_count }} member{{ workspace.member_count|pluralize }}
+                            • {{ workspace.tasks.count }} task{{ workspace.tasks.count|pluralize }}
                             {% if workspace.is_owner %}
                                 <span class="badge bg-primary">Owner</span>
                             {% endif %}

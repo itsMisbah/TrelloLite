@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto text-center">
+        <div class="py-5">
+            <h1 style="font-size: 8rem; font-weight: bold; color: #ffc107;">500</h1>
+            <h2 class="mb-4">Server Error</h2>
+            <p class="lead text-muted mb-4">
+                Something went wrong on our end. We're working to fix it!
+            </p>
+            <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                Go Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

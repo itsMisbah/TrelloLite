@@ -6,4 +6,5 @@ app_name = 'core'
 urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('my-tasks/', views.my_tasks, name='my_tasks'),
+    path('search/', views.search, name='search'),
 ]

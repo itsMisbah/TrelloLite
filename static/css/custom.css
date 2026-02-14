@@ -1,0 +1,88 @@
+/* Custom styles for TaskFlow */
+
+/* Smooth transitions */
+.btn, .card, .list-group-item {
+    transition: all 0.3s ease;
+}
+
+/* Hover effects */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.list-group-item-action:hover {
+    transform: translateX(5px);
+}
+
+/* Custom badge sizes */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+
+/* Better form focus states */
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Loading spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+}
+
+/* Avatar placeholder */
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Status indicators */
+.status-todo {
+    border-left: 4px solid #6c757d;
+}
+
+.status-in-progress {
+    border-left: 4px solid #0d6efd;
+}
+
+.status-done {
+    border-left: 4px solid #198754;
+}
+
+/* Overdue highlight */
+.overdue {
+    background-color: #fff3cd;
+    border-left: 4px solid #dc3545;
+}
+
+/* Better spacing */
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Navbar search */
+.navbar .form-control {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+}
+
+.navbar .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar .form-control:focus {
+    background-color: white;
+    color: #212529;
+}

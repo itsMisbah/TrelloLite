@@ -105,3 +105,50 @@ def my_tasks(request):
     }
     
     return render(request, 'core/my_tasks.html', context)
+
+
+def custom_404(request, exception):
+    """Custom 404 page"""
+    return render(request, 'errors/404.html', status=404)
+
+
+def custom_403(request, exception):
+    """Custom 403 page"""
+    return render(request, 'errors/403.html', status=403)
+
+
+def custom_500(request):
+    """Custom 500 page"""
+    return render(request, 'errors/500.html', status=500)
+
+# Additional views can be added here (e.g. search, notifications, etc.)
+
+@login_required
+def search(request):
+    """Global search for workspaces and tasks"""
+    query = request.GET.get('q', '').strip()
+
+    workspaces = Workspace.objects.none()
+    tasks = Task.objects.none()
+    
+    if query:
+        # Search workspaces
+        workspaces = Workspace.objects.filter(
+            Q(owner=request.user) | Q(members=request.user),
+            Q(name__icontains=query) | Q(description__icontains=query)
+        ).distinct()
+        
+        # Search tasks
+        tasks = Task.objects.filter(
+            Q(created_by=request.user) | Q(assigned_to=request.user),
+            Q(title__icontains=query) | Q(description__icontains=query)
+        ).distinct().select_related('workspace', 'assigned_to')
+    
+    context = {
+        'query': query,
+        'workspaces': workspaces,
+        'tasks': tasks,
+        'total_results': workspaces.count() + tasks.count(),
+    }
+    
+    return render(request, 'core/search.html', context)
