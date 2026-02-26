@@ -175,12 +175,13 @@ ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SESSION_REMEMBER_AGE = 60 * 60 * 24 * 30
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env("EMAIL_HOST"),
-EMAIL_PORT = env("EMAIL_PORT"),
+EMAIL_HOST = env("EMAIL_HOST")  # No comma
+EMAIL_PORT = env.int("EMAIL_PORT", default=465)  # Ensure this is an INT
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = env("EMAIL_HOST_USER"), 
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD"),  
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL"),
+EMAIL_USE_TLS = False  # Usually False if SSL is True
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 # Email Backend (Console for development)
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
