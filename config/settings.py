@@ -211,3 +211,6 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
