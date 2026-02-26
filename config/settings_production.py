@@ -1,7 +1,10 @@
 # deploy_settings.py
+from .settings import *
 import os
 import dj_database_url
 from pathlib import Path
+
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
