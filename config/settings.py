@@ -98,8 +98,11 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['profile', 'email'],
         'AUTH_PROCESS': 'redirect',
         'AUTH_PARAMS': {'access_type': 'online'},
-        'CLIENT_ID': env("CLIENT_ID"),
-        'SECRET': env("SECRET"),
+        'APP': {
+            'client_id': env("CLIENT_ID"),
+            'secret': env("SECRET"),
+            'key': ''
+        }
     }
 }
 
