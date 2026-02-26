@@ -2,49 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserProfileForm
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-
-def send_mail_page(request):
-    context = {}
-
-    if request.method == 'POST':
-        address = request.POST.get('address')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-
-        if address and subject:
-            try:
-                # example verification link
-                verification_link = "https://yourapp.onrender.com/verify/test"
-
-                # render HTML template
-                html_content = render_to_string("verification_email.html", {
-                    "user_name": "User",
-                    "verification_link": verification_link
-                })
-
-                # create email
-                email = EmailMultiAlternatives(
-                    subject,
-                    message,  # fallback text
-                    settings.EMAIL_HOST_USER,
-                    [address]
-                )
-
-                email.attach_alternative(html_content, "text/html")
-                email.send()
-
-                context['result'] = 'Email sent successfully'
-
-            except Exception as e:
-                context['result'] = f'Error sending email: {e}'
-        else:
-            context['result'] = 'All fields are required'
-
-    return render(request, "verification_email.html", context)
-
 
 @login_required
 def profile(request):
