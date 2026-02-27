@@ -70,9 +70,12 @@ CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 # else:
 #     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_BACKEND = 'anymail.backends.resend.EmailBackend'
-ANYMAIL = {
-    'RESEND_API_KEY': os.environ.get('RESEND_API_KEY'),
-}
-DEFAULT_FROM_EMAIL = 'onboarding@resend.dev'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'a3829e001@smtp-brevo.com'
+EMAIL_HOST_PASSWORD = os.environ.get('BREVO_SMTP_PASSWORD')
+DEFAULT_FROM_EMAIL = 'misbahh77777@gmail.com'
 
