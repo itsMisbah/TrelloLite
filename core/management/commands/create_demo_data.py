@@ -15,7 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('Creating demo data...')
 
-        # Create demo users
+        # Create demo users with verified emails
         demo_users = []
         usernames = ['alice', 'bob', 'charlie', 'diana']
         
@@ -32,7 +32,35 @@ class Command(BaseCommand):
             if created:
                 user.set_password('demo123')
                 user.save()
-                self.stdout.write(f'Created user: {username}')
+                
+                # ✅ VERIFY EMAIL AUTOMATICALLY
+                from allauth.account.models import EmailAddress
+                EmailAddress.objects.get_or_create(
+                    user=user,
+                    email=user.email,
+                    defaults={
+                        'verified': True,  # Auto-verify
+                        'primary': True,
+                    }
+                )
+                
+                self.stdout.write(f'Created and verified user: {username}')
+            else:
+                # If user already exists, verify their email
+                from allauth.account.models import EmailAddress
+                email_obj, _ = EmailAddress.objects.get_or_create(
+                    user=user,
+                    email=user.email,
+                    defaults={
+                        'verified': True,
+                        'primary': True,
+                    }
+                )
+                if not email_obj.verified:
+                    email_obj.verified = True
+                    email_obj.save()
+                    self.stdout.write(f'Verified existing user: {username}')
+                
             demo_users.append(user)
 
         # Create demo workspaces
@@ -126,7 +154,8 @@ class Command(BaseCommand):
                 
                 self.stdout.write(f'Created task: {title}')
 
-        self.stdout.write(self.style.SUCCESS('Demo data created successfully!'))
-        self.stdout.write('\nDemo users created:')
+        self.stdout.write(self.style.SUCCESS('✅ Demo data created successfully!'))
+        self.stdout.write('\n📧 All demo users have verified emails')
+        self.stdout.write('\n🔑 Demo users created (all verified):')
         for username in usernames:
             self.stdout.write(f'  Username: {username}, Password: demo123')
