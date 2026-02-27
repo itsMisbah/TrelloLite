@@ -8,7 +8,9 @@ MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = False
+# DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
 SECRET_KEY = os.environ['SECRET_KEY']
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
