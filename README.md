@@ -22,10 +22,11 @@ A modern, feature-rich task management application built with Django. TaskFlow h
 
 ## Tech Stack
 
-- **Backend**: Django 5.x
+- **Backend**: Django 5.x + + DRF
 - **Database**: PostgreSQL
 - **Authentication**: django-allauth
 - **Frontend**: Bootstrap 5, HTML5, CSS3
+- **API**: RESTful with comprehensive documentation
 
 ## Installation
 
@@ -100,6 +101,10 @@ taskflow/
 └── config/           # Project settings
 ```
 
+** Live Demo**: [https://trellolite.onrender.com](https://trellolite.onrender.com)  
+** API Docs**: [https://trellolite.onrender.com/api/docs/](https://trellolite.onrender.com/api/docs/) 
+```
+
 ## License
 
 This project is licensed under the MIT License.
@@ -109,4 +114,3 @@ This project is licensed under the MIT License.
 **Misbah Sultan**
 - LinkedIn: [Misbah-Shahzadi](www.linkedin.com/in/misbah-shahzadi)
 - Email: misbahh77777@gmail.com.com
-

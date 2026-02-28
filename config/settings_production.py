@@ -23,6 +23,8 @@ DATABASES = {
     )
 }
 
+SITE_ID = 1
+
 # Google OAuth
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
