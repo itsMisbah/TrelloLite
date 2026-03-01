@@ -22,7 +22,7 @@ A modern, feature-rich task management application built with Django. TaskFlow h
 
 ## Tech Stack
 
-- **Backend**: Django 5.x + + DRF
+- **Backend**: Django 5.x + DRF
 - **Database**: PostgreSQL
 - **Authentication**: django-allauth
 - **Frontend**: Bootstrap 5, HTML5, CSS3
@@ -103,6 +103,14 @@ taskflow/
 
 ** Live Demo**: [https://trellolite.onrender.com](https://trellolite.onrender.com)  
 ** API Docs**: [https://trellolite.onrender.com/api/docs/](https://trellolite.onrender.com/api/docs/) 
+
+**Demo Credentials:**
+- Username: `alice`
+- Password: `demo123`
+
+(Or create your own account!)
+
+**Note:** First load may take 30-60 seconds as the free tier spins up.
 ```
 
 ## License
