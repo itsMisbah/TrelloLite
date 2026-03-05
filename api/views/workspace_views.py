@@ -27,7 +27,7 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return Workspace.objects.filter(
             Q(owner=user) | Q(members=user)
-        ).distinct().prefetch_related('members', 'owner')
+        ).distinct().select_related('owner').prefetch_related('members')
     
     def perform_create(self, serializer):
         """Set owner to current user"""
