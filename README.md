@@ -103,6 +103,13 @@ taskflow/
 
 ** Live Demo**: [https://trellolite.onrender.com](https://trellolite.onrender.com)  
 ** API Docs**: [https://trellolite.onrender.com/api/docs/](https://trellolite.onrender.com/api/docs/) 
+
+** Demo Credentials
+- username = Alice
+- password = demo123
+
+ (or you can create your own account)
+
 ```
 
 ## License
