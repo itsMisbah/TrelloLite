@@ -103,14 +103,6 @@ taskflow/
 
 ** Live Demo**: [https://trellolite.onrender.com](https://trellolite.onrender.com)  
 ** API Docs**: [https://trellolite.onrender.com/api/docs/](https://trellolite.onrender.com/api/docs/) 
-
-**Demo Credentials:**
-- Username: `alice`
-- Password: `demo123`
-
-(Or create your own account!)
-
-**Note:** First load may take 30-60 seconds as the free tier spins up.
 ```
 
 ## License
